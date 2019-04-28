@@ -2,6 +2,7 @@ var debug_output = document.getElementById('debug_output');
 
 'use strict';
 /*zmienne*/
+var ModalContent = document.getElementById('ModalContent');
 var output = document.getElementById('output');
 var resultCounter = document.getElementById('result');
 var newGame = document.getElementById('btn-newGame');
@@ -39,8 +40,6 @@ var CompTurnFunc = function(){
 var ResultTxtFunc = function(PlayerTurn, CompTurn){
 
   var PlayerTurnTxt = String(PlayerTurn);
-  
-  /* debug_output.innerHTML = PlayerTurnTxt; */
 
      if (CompTurn == 1) { 
       var CompTurnTxt = 'paper';
@@ -65,9 +64,11 @@ var ResultTxtFunc = function(PlayerTurn, CompTurn){
 var endGameFunc = function(X, Y, RoundNumTotal) {
   if (X == RoundNumTotal) {
     var endGameTxt = 'YOU WON THE ENTIRE GAME!!!' + '<br>';
+    ModalContent.innerHTML = endGameTxt;
     blockGame = blockGame + 1;
   } else if (Y == RoundNumTotal) {
     var endGameTxt = 'YOU LOST THE ENTIRE GAME!!!' + '<br>';
+    ModalContent.innerHTML = endGameTxt;
     blockGame = blockGame + 1;
   } else {
     var endGameTxt = '';
@@ -112,3 +113,64 @@ var BtnCounter = ActBtn.length;
 for(var i = 0; i < BtnCounter; i++){
   ActBtn[i].addEventListener('click', GameInfo);
 }
+
+/* Js-modal */
+
+(function(){ 
+
+  /* otwarcie modalu */
+  
+	var showModal = function(event){
+		event.preventDefault();
+   
+    if (X == RoundNumTotal) {
+		document.querySelector('#modal-overlay').classList.remove('show');  /* <- Usuwało klasę show ze wszystkich modali */
+    document.querySelector('#modal').classList.add('show');
+    document.querySelector('#modal-overlay').classList.add('show');  
+    } else if (Y == RoundNumTotal){
+    document.querySelector('#modal-overlay').classList.remove('show');  /* <- Usuwało klasę show ze wszystkich modali */
+    document.querySelector('#modal').classList.add('show');
+    document.querySelector('#modal-overlay').classList.add('show');
+    }
+    
+	};
+  
+	var modalBtn = document.querySelectorAll('.player-move');             
+	for(var i = 0; i < modalBtn.length; i++){
+      modalBtn[i].addEventListener('click', showModal);
+  }
+  
+  /* funkcja zamykająca modal */
+  
+	var hideModal = function(event){
+		event.preventDefault();
+		document.querySelector('#modal-overlay').classList.remove('show');
+    
+    var ModalCounter = document.querySelectorAll('.modal');
+    var a = ModalCounter.length;
+    
+    for(var i =0; i < a; i++){
+      ModalCounter[i].classList.remove('show');
+    }
+	};
+	
+	var closeButtons = document.querySelectorAll('.modal .close');
+	
+	for(var i = 0; i < closeButtons.length; i++){
+		closeButtons[i].addEventListener('click', hideModal);
+	}
+	
+  /* zamykania modala poprzez kliknięcie w overlay */
+  
+	document.querySelector('#modal-overlay').addEventListener('click', hideModal);
+	
+   /* zablokowanie propagacji kliknięć z samego modala */
+  
+	var modals = document.querySelectorAll('.modal');
+	
+	for(var i = 0; i < modals.length; i++){
+		modals[i].addEventListener('click', function(event){
+			event.stopPropagation();
+		});
+	}
+})();
