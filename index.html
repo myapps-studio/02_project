@@ -1,61 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" >
-
 <head>
   <meta charset="UTF-8">
   <title>game</title>
-  
-  
-  
-      <link rel="stylesheet" href="css/style.css">
-
-  
+  <link rel="stylesheet" href="css/style.css">  
 </head>
-
 <body>
-
   <div>
-   <div>
-    <button id="btn-newGame">
+    <div>
+      <button id="btn-newGame">
       New Game
-    </button>    
-  </div>
+      </button>    
+    </div>
   <h3>Your turn:</h3>
   <h5 id="roundInf"></h5>
-  <div>
-    <button id="btn-paper">
+    <div>
+      <button id="btn-paper" data-move="paper" class="player-move">
       Paper
-    </button>
-  </div>
+      </button>
+    </div>
   <br>
-  <div>
-    <button id="btn-stone">
+    <div>
+      <button id="btn-stone" data-move="stone" class="player-move">
       Stone
-    </button>
+      </button>
+    </div>
+  <br>
+    <div>
+      <button id="btn-scissors" data-move="scissors" class="player-move">
+        Scissors
+      </button>
+    </div>
+  </div>
+  <div>
+    <h3>Results:</h3>
+    <div id="output" class="output">
+    </div>
+  </div>
+  <div id="result">
   </div>
   <br>
-  <div>
-    <button id="btn-scissors">
-      Scissors
-    </button>
-  </div>
+
+  <!-- usuń po skończeniu pracy \/ -->
+<h5>Debugger result:</h5>
+<div id="debug_output" class="debug_output">
 </div>
-<div>
-  <h3>Results:</h3>
-  <div id="output" class="output">
-  </div>
-</div>
-<div id="result">
-</div>
-<br>
-  
-  
 
-    <script  src="js/index.js"></script>
-
-
-
-
+  <script  src="js/index.js"></script>
 </body>
-
 </html>

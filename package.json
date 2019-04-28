@@ -33,10 +33,10 @@
   "devDependencies": {
     "autoprefixer": "^9.4.9",
     "autoprefixer-cli": "^1.0.0",
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.26.5",
     "globstar": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "normalize.css": "^8.0.1",
     "npm-run-all": "^4.1.5",
     "nu-html-checker": "^0.1.0",

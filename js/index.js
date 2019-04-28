@@ -1,26 +1,32 @@
+var debug_output = document.getElementById('debug_output');
+
 'use strict';
 /*zmienne*/
 var output = document.getElementById('output');
-var btn_paper = document.getElementById('btn-paper');
-var btn_stone = document.getElementById('btn-stone');
-var btn_scissors = document.getElementById('btn-scissors');
 var resultCounter = document.getElementById('result');
 var newGame = document.getElementById('btn-newGame');
 var roundInf = document.getElementById('roundInf');
-var PlayerTurn
-var CompTurn
 var turn
 var PlayerTurnTxt
 var CompTurnTxt
-var X
-var Y
-var RoundNum /*liczba wygranych gracza potrzbna wygrania gry*/
-var RoundNumTotal
+var RoundNum
 var blockGame /*wywolanie: "Game over, please press the new game button!"*/
 var gameOverCheck
+var PlayerTurn
+var CompTurn
+var RoundNumTotal
+var Y
+var X
+
+/*
+var params {
+  X
+};
+*/
 
 var playerMove = function(turn){
-  CompTurn = CompTurnFunc();
+  var CompTurn = CompTurnFunc();
+
   var Result = ResultTxtFunc(turn, CompTurn);
   return Result;
 }
@@ -31,23 +37,21 @@ var CompTurnFunc = function(){
 }
 
 var ResultTxtFunc = function(PlayerTurn, CompTurn){
-    if (PlayerTurn == 1) { 
-      var PlayerTurnTxt = 'PAPER';
-  } else if (PlayerTurn == 2) {
-      var PlayerTurnTxt = 'STONE';
-  } else {
-      var PlayerTurnTxt = 'SCISSORS';
-  }
+
+  var PlayerTurnTxt = String(PlayerTurn);
+  
+  /* debug_output.innerHTML = PlayerTurnTxt; */
+
      if (CompTurn == 1) { 
-      var CompTurnTxt = 'PAPER';
+      var CompTurnTxt = 'paper';
   } else if (CompTurn == 2) {
-      var CompTurnTxt = 'STONE';
+      var CompTurnTxt = 'stone';
   } else {
-      var CompTurnTxt = 'SCISSORS';
+      var CompTurnTxt = 'scissors';
   }
-    if (PlayerTurn == CompTurn) {
+    if (PlayerTurn == CompTurnTxt) {
      var Txt = 'It is a DRAW!';
-  } else if ((PlayerTurn == 1 && CompTurn == 2) || (PlayerTurn == 2 && CompTurn == 3) || (PlayerTurn == 3 && CompTurn == 1)) {
+  } else if ((PlayerTurn == 'paper' && CompTurn == 'stone') || (PlayerTurn == 'stone' && CompTurn == 'scissors') || (PlayerTurn == 'scissors' && CompTurn == 'paper')) {
      var Txt = 'You WON. You played: ' + PlayerTurnTxt + ', Computer played: ' + CompTurnTxt + '.';
      X = X + 1;
      RoundNum = RoundNum - 1;
@@ -72,6 +76,18 @@ var endGameFunc = function(X, Y, RoundNumTotal) {
   return endGameTxt
 }
 
+var GameInfo = function(event) {
+  
+  var TurnTxt = event.target.getAttribute('data-move');
+
+  if (blockGame == 0){
+      output.innerHTML = playerMove(TurnTxt) + '<br>' + endGameFunc(X, Y, RoundNumTotal) + '<br>' + output.innerHTML;
+      resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
+      roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
+  } else {
+      output.innerHTML = 'Game over, please press the new game button!'
+  }
+}
 /*~~~~~~*/
 
 newGame.addEventListener('click', function(){
@@ -90,35 +106,9 @@ newGame.addEventListener('click', function(){
 X = 0;
 Y = 0;
 
-/* 1 -> paper */
-btn_paper.addEventListener('click', function(){
-  if (blockGame == 0){
-      output.innerHTML = playerMove(1) + '<br>' + endGameFunc(X, Y, RoundNumTotal) + '<br>' + output.innerHTML;
-      resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
-      roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
-  } else {
-      output.innerHTML = 'Game over, please press the new game button!'
-  }
-})
+var ActBtn = document.querySelectorAll('.player-move');
+var BtnCounter = ActBtn.length;
 
-/* 2 -> stone */
-btn_stone.addEventListener('click', function(){
-  if (blockGame == 0){
-    output.innerHTML = playerMove(2) + '<br>' + endGameFunc(X, Y, RoundNumTotal) + '<br>' + output.innerHTML;
-    resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
-    roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
-  } else {
-    output.innerHTML = 'Game over, please press the new game button!'
-  }
-})
-
-/* 3 -> scissors */
-btn_scissors.addEventListener('click', function(){
-  if (blockGame == 0){
-    output.innerHTML = playerMove(3) + '<br>' + endGameFunc(X, Y, RoundNumTotal) + '<br>' + output.innerHTML;
-    resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
-    roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
-  } else {
-    output.innerHTML = 'Game over, please press the new game button!'
-  }
-})
+for(var i = 0; i < BtnCounter; i++){
+  ActBtn[i].addEventListener('click', GameInfo);
+}
