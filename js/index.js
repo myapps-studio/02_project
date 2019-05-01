@@ -1,28 +1,32 @@
+'use strict';
+
 var debug_output = document.getElementById('debug_output');
 
-'use strict';
 /*zmienne*/
 var ModalContent = document.getElementById('ModalContent');
 var output = document.getElementById('output');
 var resultCounter = document.getElementById('result');
 var newGame = document.getElementById('btn-newGame');
 var roundInf = document.getElementById('roundInf');
-var turn
-var PlayerTurnTxt
-var CompTurnTxt
-var RoundNum
-var blockGame /*wywolanie: "Game over, please press the new game button!"*/
-var gameOverCheck
-var PlayerTurn
-var CompTurn
-var RoundNumTotal
-var Y
-var X
+var turn;
+var PlayerTurnTxt;
+var CompTurnTxt;
+var RoundNum;
+var blockGame; /*wywolanie: "Game over, please press the new game button!"*/
+var gameOverCheck;
+var PlayerTurn;
+var CompTurn;
+var RoundNumTotal;
+var Y;
+var X;
 
 /*
 var params {
-  X
+  test1: 'aaa',
+  test2: 'sss'
 };
+
+debug_output.innerHTML = params.test1;
 */
 
 var playerMove = function(turn){
@@ -48,9 +52,9 @@ var ResultTxtFunc = function(PlayerTurn, CompTurn){
   } else {
       var CompTurnTxt = 'scissors';
   }
-    if (PlayerTurn == CompTurnTxt) {
+    if (PlayerTurnTxt == CompTurnTxt) {
      var Txt = 'It is a DRAW!';
-  } else if ((PlayerTurn == 'paper' && CompTurn == 'stone') || (PlayerTurn == 'stone' && CompTurn == 'scissors') || (PlayerTurn == 'scissors' && CompTurn == 'paper')) {
+  } else if ((PlayerTurnTxt == 'paper' && CompTurnTxt == 'stone') || (PlayerTurnTxt == 'stone' && CompTurnTxt == 'scissors') || (PlayerTurnTxt == 'scissors' && CompTurnTxt == 'paper')) {
      var Txt = 'You WON. You played: ' + PlayerTurnTxt + ', Computer played: ' + CompTurnTxt + '.';
      X = X + 1;
      RoundNum = RoundNum - 1;
@@ -74,7 +78,7 @@ var endGameFunc = function(X, Y, RoundNumTotal) {
     var endGameTxt = '';
     blockGame = 0;
   }
-  return endGameTxt
+  return endGameTxt;
 }
 
 var GameInfo = function(event) {
@@ -86,7 +90,7 @@ var GameInfo = function(event) {
       resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
       roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
   } else {
-      output.innerHTML = 'Game over, please press the new game button!'
+      output.innerHTML = 'Game over, please press the new game button!';
   }
 }
 /*~~~~~~*/
