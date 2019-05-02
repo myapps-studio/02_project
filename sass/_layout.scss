@@ -24,11 +24,13 @@ body {
 .modal {
 	display: none;
 	background: #fff;
-	width: 200px;
+	width: 500px;
+	height: auto;
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate3d(-50%, -50%, 0);
+	text-align: center;
 
 	&.show {
 		display: block;
@@ -55,4 +57,24 @@ body {
 		min-height: 30px;
 		padding: 5px 30px;
 	}
+
+	.table {
+		padding: 5px;
+	}
 }
+
+table {
+	border: 1px solid black;
+	width: 400px;
+	height: 200px;
+	border-spacing: 5px;
+
+	> th {
+		border: 1px solid black;
+	}
+
+	> td {
+		border: 1px solid black;
+	}
+}
+

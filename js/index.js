@@ -12,26 +12,28 @@ var turn;
 var PlayerTurnTxt;
 var CompTurnTxt;
 var RoundNum;
-var blockGame; /*wywolanie: "Game over, please press the new game button!"*/
+var blockGame; /* wywolanie: "Game over, please press the new game button!" */
 var gameOverCheck;
 var PlayerTurn;
 var CompTurn;
 var RoundNumTotal;
 var Y;
 var X;
+var Round;
 
-/*
-var params {
-  test1: 'aaa',
-  test2: 'sss'
+var params = {
+  RoundsToWin: RoundNumTotal, 
+  RoundsLeft: RoundNum,
+  RoundCounter: Round,
+  PlayerScore: X, 
+  CompScore: Y,
+  progress: []
 };
 
-debug_output.innerHTML = params.test1;
-*/
-
 var playerMove = function(turn){
-  var CompTurn = CompTurnFunc();
+  params.RoundCounter = params.RoundCounter + 1;
 
+  var CompTurn = CompTurnFunc();
   var Result = ResultTxtFunc(turn, CompTurn);
   return Result;
 }
@@ -56,24 +58,57 @@ var ResultTxtFunc = function(PlayerTurn, CompTurn){
      var Txt = 'It is a DRAW!';
   } else if ((PlayerTurnTxt == 'paper' && CompTurnTxt == 'stone') || (PlayerTurnTxt == 'stone' && CompTurnTxt == 'scissors') || (PlayerTurnTxt == 'scissors' && CompTurnTxt == 'paper')) {
      var Txt = 'You WON. You played: ' + PlayerTurnTxt + ', Computer played: ' + CompTurnTxt + '.';
-     X = X + 1;
-     RoundNum = RoundNum - 1;
+     params.PlayerScore = params.PlayerScore + 1;
+     params.RoundsLeft = params.RoundsLeft - 1;
   } else {
      var Txt = 'You LOST. You played: ' + PlayerTurnTxt + ', Computer played: ' + CompTurnTxt + '.';
-     Y = Y + 1;
+     params.CompScore = params.CompScore + 1;
   }
+ 
+ /*
+ debug_output.innerHTML = ' RoundsToWin: ' + params.RoundsToWin;
+ debug_output.innerHTML = debug_output.innerHTML + ' RoundsLeft: ' + params.RoundsLeft;
+ debug_output.innerHTML = debug_output.innerHTML + ' RoundCounter: ' + params.RoundCounter;
+ debug_output.innerHTML = debug_output.innerHTML + ' PlayerScore: ' + params.PlayerScore;
+ debug_output.innerHTML = debug_output.innerHTML + ' CompScore: ' + params.CompScore;
+*/
+  var PushIt = {RoundsToWin: params.RoundsToWin, RoundsLeft: params.RoundsLeft, RoundCounter: params.RoundCounter, PlayerScore: params.PlayerScore, CompScore: params.CompScore};
+  params.progress.push(PushIt);
+
   return Txt; 
 }
 
 var endGameFunc = function(X, Y, RoundNumTotal) {
-  if (X == RoundNumTotal) {
+  if (params.PlayerScore == params.RoundsToWin) {
     var endGameTxt = 'YOU WON THE ENTIRE GAME!!!' + '<br>';
     ModalContent.innerHTML = endGameTxt;
     blockGame = blockGame + 1;
-  } else if (Y == RoundNumTotal) {
+
+    /* create table*/
+    createTable(
+
+      params.progress
+      ,
+        ['RoundsToWin', 'RoundsLeft', 'RoundCounter', 'PlayerScore', 'CompScore'], 
+        ['RoundsToWin', 'RoundsLeft', 'RoundCounter', 'PlayerScore', 'CompScore']
+      );
+    /* end */
+
+  } else if (params.CompScore == params.RoundsToWin) {
     var endGameTxt = 'YOU LOST THE ENTIRE GAME!!!' + '<br>';
     ModalContent.innerHTML = endGameTxt;
     blockGame = blockGame + 1;
+
+    /* create table*/
+    createTable(
+
+      params.progress
+      ,
+        ['RoundsToWin', 'RoundsLeft', 'RoundCounter', 'PlayerScore', 'CompScore'], 
+        ['RoundsToWin', 'RoundsLeft', 'RoundCounter', 'PlayerScore', 'CompScore']
+      );
+    /* end */
+
   } else {
     var endGameTxt = '';
     blockGame = 0;
@@ -86,30 +121,31 @@ var GameInfo = function(event) {
   var TurnTxt = event.target.getAttribute('data-move');
 
   if (blockGame == 0){
-      output.innerHTML = playerMove(TurnTxt) + '<br>' + endGameFunc(X, Y, RoundNumTotal) + '<br>' + output.innerHTML;
-      resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
-      roundInf.innerHTML = 'You need ' + RoundNum + ' wins to win the entire game!';
+      output.innerHTML = playerMove(TurnTxt) + '<br>' + endGameFunc(X, Y, params.RoundsToWin) + '<br>' + output.innerHTML;
+      resultCounter.innerHTML = '/SCORE:/ Player-> '+ params.PlayerScore +'-'+ params.CompScore +' <-Computer';
+      roundInf.innerHTML = 'You need ' + params.RoundsLeft + ' wins to win the entire game!';
   } else {
       output.innerHTML = 'Game over, please press the new game button!';
   }
 }
 /*~~~~~~*/
+params.RoundCounter = 0;
 
 newGame.addEventListener('click', function(){
-  RoundNum = window.prompt('How many wins you want to play [number]?');
-  RoundNum = parseInt(RoundNum);
-  RoundNumTotal = RoundNum;
+  params.RoundsLeft = window.prompt('How many wins you want to play [number]?');
+  params.RoundsLeft = parseInt(params.RoundsLeft);
+  params.RoundsToWin = params.RoundsLeft;
   blockGame = 0;
-  roundInf.innerHTML = 'You need ' + RoundNumTotal + ' wins to win the entire game!';
+  roundInf.innerHTML = 'You need ' + params.RoundsToWin + ' wins to win the entire game!';
   output.innerHTML = '';
-  X = 0;
-  Y = 0;
-  resultCounter.innerHTML = '/SCORE:/ Player-> '+ X +'-'+ Y +' <-Computer';
-})
+  params.PlayerScore = 0;
+  params.CompScore = 0;
+  resultCounter.innerHTML = '/SCORE:/ Player-> '+ params.PlayerScore +'-'+ params.CompScore +' <-Computer';
+});
 
 /* X to wygrane gracza, a Y to wygrane komputera */
-X = 0;
-Y = 0;
+params.PlayerScore = 0;
+params.CompScore = 0;
 
 var ActBtn = document.querySelectorAll('.player-move');
 var BtnCounter = ActBtn.length;
@@ -127,11 +163,11 @@ for(var i = 0; i < BtnCounter; i++){
 	var showModal = function(event){
 		event.preventDefault();
    
-    if (X == RoundNumTotal) {
+    if (params.PlayerScore == params.RoundsToWin) {
 		document.querySelector('#modal-overlay').classList.remove('show');  /* <- Usuwało klasę show ze wszystkich modali */
     document.querySelector('#modal').classList.add('show');
     document.querySelector('#modal-overlay').classList.add('show');  
-    } else if (Y == RoundNumTotal){
+    } else if (params.CompScore == params.RoundsToWin){
     document.querySelector('#modal-overlay').classList.remove('show');  /* <- Usuwało klasę show ze wszystkich modali */
     document.querySelector('#modal').classList.add('show');
     document.querySelector('#modal-overlay').classList.add('show');
@@ -178,3 +214,42 @@ for(var i = 0; i < BtnCounter; i++){
 		});
 	}
 })();
+
+/*~~~~~~ end ~~~~~~*/
+
+/* Create Func Table */
+
+function createTable(objectArray, fields, fieldTitles) {
+  
+  let table = document.getElementById('table');
+  /* debug_output.innerHTML = table; */
+  let tbl = document.createElement('table');
+  let thead = document.createElement('thead');
+  let thr = document.createElement('tr');
+  
+  fieldTitles.forEach((fieldTitle) => {
+    let th = document.createElement('th');
+    th.appendChild(document.createTextNode(fieldTitle));
+    thr.appendChild(th);
+  });
+
+  thead.appendChild(thr);
+  tbl.appendChild(thead);
+
+  let tbdy = document.createElement('tbody');
+  let tr = document.createElement('tr');
+  objectArray.forEach((object) => {
+    let tr = document.createElement('tr');
+    fields.forEach((field) => {
+      var td = document.createElement('td');
+      td.appendChild(document.createTextNode(object[field]));
+      tr.appendChild(td);
+    });
+    tbdy.appendChild(tr);    
+  });
+  tbl.appendChild(tbdy);
+  table.appendChild(tbl)
+  return tbl;
+}
+
+/*~~~~~~ KONIEC ~~~~~~*/
